@@ -136,8 +136,25 @@ module NestThermostat
       raise 'Invalid login credentials' if auth.has_key?('error') && auth['error'] == "access_denied"
     end
 
-    def structure_info
+    def structures
+      ids = user_info['structures'].map  { |struct| struct.split('.')[1] }
+      structures = {}
+      ids.each { |id| structures[id] = structure_info(structure_id: id) }
+      structures
+    end
+
+    def structure_info(structure_id: @structure_id)
       status['structure'][structure_id]
+    end
+
+    def devices
+      # Save this for another method #structure_devices(struct_id) ??
+      # structures.each { |key, hash| ids.push(hash['devices']) }
+      # ids = ids.flatten.map { |id| id.split('.')[1] }
+      ids = status['device'].keys
+      devices = {}
+      ids.each { |id| devices[id]= device_info(device_id: id) }
+      devices
     end
 
     def user_info
@@ -148,7 +165,7 @@ module NestThermostat
       status["track"][device_id]
     end
 
-    def device_info
+    def device_info(device_id: @device_id)
       status["device"][device_id]
     end
 

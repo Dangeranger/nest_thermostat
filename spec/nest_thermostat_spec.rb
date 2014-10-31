@@ -95,4 +95,13 @@ describe NestThermostat::Nest do # TODO make mock for connection
     @nest.fan_mode.should == "auto"
   end
 
+  it "returns a list of structures on account" do
+    @nest.devices.should_not be_nil
+  end
+
+  it "returns a list of devices on account" do
+    @nest.devices.should_not be_nil
+  end
+
+
 end
