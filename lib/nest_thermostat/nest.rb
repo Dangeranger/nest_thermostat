@@ -35,11 +35,11 @@ module NestThermostat
         'Accept'                => '*/*'
       }
 
-      # Sets the value of :status to the result of refresh
+      # Sets the value of @status to the result of refresh
       refresh
 
-      @structure_id = config[:structure_id] || status['user'][user_id]['structures'][0].split('.')[1]
-      @device_id    = config[:device_id] || status['structure'][structure_id]['devices'][0].split('.')[1]
+      @structure_id = config[:structure_id] || user_info['structures'][0].split('.')[1]
+      @device_id    = config[:device_id] || structure_info['devices'][0].split('.')[1]
 
     end
 
@@ -54,24 +54,24 @@ module NestThermostat
     attr_reader :status
 
     def public_ip
-      status["track"][device_id]["last_ip"].strip
+      track_info["last_ip"].strip
     end
 
     def leaf
-      status["device"][device_id]["leaf"]
+      device_info["leaf"]
     end
 
     def humidity
-      status["device"][device_id]["current_humidity"]
+      device_info["current_humidity"]
     end
 
     def current_temperature
-      convert_temp_for_get(status["shared"][device_id]["current_temperature"])
+      convert_temp_for_get(shared_info["current_temperature"])
     end
     alias_method :current_temp, :current_temperature
 
     def temperature
-      convert_temp_for_get(status["shared"][device_id]["target_temperature"])
+      convert_temp_for_get(shared_info["target_temperature"])
     end
     alias_method :temp, :temperature
 
@@ -88,7 +88,7 @@ module NestThermostat
     alias_method :temp=, :temperature=
 
     def target_temperature_at
-      epoch = status["device"][device_id]["time_to_target"]
+      epoch = device_info["time_to_target"]
       epoch != 0 ? Time.at(epoch) : false
     end
     alias_method :target_temp_at, :target_temperature_at
@@ -112,7 +112,7 @@ module NestThermostat
     end
 
     def fan_mode
-      status["device"][device_id]["fan_mode"]
+      device_info["fan_mode"]
     end
 
     def fan_mode=(state)
@@ -134,6 +134,26 @@ module NestThermostat
 
       self.auth ||= JSON.parse(login_request.body) rescue nil
       raise 'Invalid login credentials' if auth.has_key?('error') && auth['error'] == "access_denied"
+    end
+
+    def structure_info
+      status['structure'][structure_id]
+    end
+
+    def user_info
+      status['user'][user_id]
+    end
+
+    def track_info
+      status["track"][device_id]
+    end
+
+    def device_info
+      status["device"][device_id]
+    end
+
+    def shared_info
+      status["shared"][device_id]
     end
 
     def convert_temp_for_get(degrees)
