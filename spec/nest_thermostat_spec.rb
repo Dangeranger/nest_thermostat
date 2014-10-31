@@ -8,9 +8,9 @@ RSpec.configure do |c|
     c.run_all_when_everything_filtered = true
 end
 
-describe NestThermostat::Nest do
+describe NestThermostat::Nest do # TODO make mock for connection
   before(:all) do
-    @nest = NestThermostat::Nest.new({email: ENV['NEST_EMAIL'], password: ENV['NEST_PASS'], temperature_scale: 'F'})
+    @nest = NestThermostat::Nest.new({temperature_scale: 'F'})
   end
 
   it "logs in to home.nest.com" do
