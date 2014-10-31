@@ -14,7 +14,7 @@ describe NestThermostat::Nest do # TODO make mock for connection
   end
 
   it "logs in to home.nest.com" do
-    @nest.transport_url.should match /transport.nest.com/
+    @nest.transport_url.should match /transport.home.nest.com/
   end
 
   it "detects invalid logins" do
