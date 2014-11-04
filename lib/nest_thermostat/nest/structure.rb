@@ -22,6 +22,23 @@ module NestThermostat
         ids.flatten
       end
 
+      def away
+        status["structure"][id]["away"]
+      end
+
+      def away=(state)
+        request = HTTParty.post(
+          "#{nest.transport_url}/v2/put/structure.#{id}",
+          body: %Q({"away_timestamp":#{Time.now.to_i},"away":#{!!state},"away_setter":0}),
+          headers: nest.headers
+        )
+        nest.refresh
+      end
+
+      def status
+        nest.status
+      end
+
     end
   end
 end
