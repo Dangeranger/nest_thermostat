@@ -16,7 +16,6 @@ module NestThermostat
       # User specified information
       @email             = config[:email] || ENV['NEST_EMAIL'] || raise("please set email in NEST_EMAIL")
       @password          = config[:password] || ENV['NEST_PASSWORD'] || raise("please set nest password in NEST_PASSWORD")
-      @temperature_scale = config[:temperature_scale] || config[:temp_scale] || 'f'
       @login_url         = config[:login_url] || 'https://home.nest.com/user/login'
       @user_agent        = config[:user_agent] ||'Nest/1.1.0.10 CFNetwork/548.0.4'
 

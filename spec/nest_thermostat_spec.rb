@@ -71,13 +71,12 @@ describe NestThermostat::Nest do # TODO make mock for connection
   end
 
   it "sets the temperature in celsius" do
-    @nest.temperature_scale = 'c'
+    first_device.temperature_scale = 'c'
     first_device.temperature = '22'
     first_device.temperature.should eq(22.0)
   end
 
   it "sets the temperature in kelvin" do
-    @nest.temperature_scale = 'k' #added this line
     first_device.temp_scale = 'k'
     first_device.temperature = '296'
     first_device.temperature.should eq(296.0)

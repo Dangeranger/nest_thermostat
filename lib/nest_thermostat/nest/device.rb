@@ -3,10 +3,10 @@ require 'nest_thermostat/nest/structure'
 module NestThermostat
   class Nest
     class Device
-      attr_accessor :structure, :id, :name
+      attr_accessor :structure, :id, :name, :temperature_scale
 
-      def initialize(structure:, id:, name:)
-        @structure, @id, @name = structure, id, name
+        def initialize(structure:, id:, name:, temperature_scale: "f")
+        @structure, @id, @name, @temperature_scale = structure, id, name, temperature_scale
       end
 
       def leaf
@@ -69,7 +69,7 @@ module NestThermostat
       alias_method :current_temp, :current_temperature
 
       def convert_temp_for_get(degrees)
-        case structure.nest.temperature_scale
+        case temperature_scale
         when /[fF](ahrenheit)?/
           c2f(degrees).round(3)
         when /[kK](elvin)?/
@@ -80,7 +80,7 @@ module NestThermostat
       end
 
       def convert_temp_for_set(degrees)
-        case structure.nest.temperature_scale
+        case temperature_scale
         when /[fF](ahrenheit)?/
           f2c(degrees).round(5)
         when /[kK](elvin)?/
