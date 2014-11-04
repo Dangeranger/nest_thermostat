@@ -8,7 +8,7 @@ require 'uri'
 module NestThermostat
   class Nest
     attr_accessor :email, :password, :login_url, :user_agent, :auth,
-      :temperature_scale, :login, :token, :user_id, :transport_url,
+      :login, :token, :user_id, :transport_url,
       :transport_host, :structures, :devices, :headers
 
     def initialize(config = {})
@@ -38,9 +38,6 @@ module NestThermostat
 
       # Sets the value of @status to the result of refresh
       refresh
-
-      # @structure  = config[:structure_id] || user_info['structures'][0].split('.')[1]
-      # @device     = config[:device_id] || structure_info['devices'][0].split('.')[1]
 
       structure_ids   = status['structure'].keys
       devices_ids     = status['device'].keys
