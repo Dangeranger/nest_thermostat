@@ -1,3 +1,5 @@
+require 'nest_thermostat/nest/structure'
+require 'nest_thermostat/nest/device'
 require 'rubygems'
 require 'httparty'
 require 'json'
@@ -7,7 +9,7 @@ module NestThermostat
   class Nest
     attr_accessor :email, :password, :login_url, :user_agent, :auth,
       :temperature_scale, :login, :token, :user_id, :transport_url,
-      :transport_host, :structure_id, :device_id, :headers
+      :transport_host, :structures, :devices, :headers
 
     def initialize(config = {})
 
@@ -38,9 +40,18 @@ module NestThermostat
       # Sets the value of @status to the result of refresh
       refresh
 
-      @structure_id = config[:structure_id] || user_info['structures'][0].split('.')[1]
-      @device_id    = config[:device_id] || structure_info['devices'][0].split('.')[1]
+      # @structure  = config[:structure_id] || user_info['structures'][0].split('.')[1]
+      # @device     = config[:device_id] || structure_info['devices'][0].split('.')[1]
 
+      structure_ids   = status['structure'].keys
+      devices_ids     = status['device'].keys
+
+      @structures = find_structures.map do |id, hash|
+        Structure.new(nest: self,
+                      id: id,
+                      name: hash['name']
+                     )
+      end
     end
 
     def refresh
@@ -136,8 +147,8 @@ module NestThermostat
       raise 'Invalid login credentials' if auth.has_key?('error') && auth['error'] == "access_denied"
     end
 
-    def structures
-      ids = user_info['structures'].map  { |struct| struct.split('.')[1] }
+    def find_structures
+      ids = status['structure'].keys
       structures = {}
       ids.each { |id| structures[id] = structure_info(structure_id: id) }
       structures
@@ -147,11 +158,8 @@ module NestThermostat
       status['structure'][structure_id]
     end
 
-    def devices
-      # Save this for another method #structure_devices(struct_id) ??
-      # structures.each { |key, hash| ids.push(hash['devices']) }
-      # ids = ids.flatten.map { |id| id.split('.')[1] }
-      ids = status['device'].keys
+    def find_devices(ids: nil)
+      ids = status['shared'].keys unless ids
       devices = {}
       ids.each { |id| devices[id]= device_info(device_id: id) }
       devices
