@@ -60,11 +60,16 @@ module NestThermostat
 
     attr_reader :status
 
+    def devices
+      structures.map(&:devices).flatten
+    end
+
     def leaf
       device_info["leaf"]
     end
 
-    # private
+    #private
+
     def perform_login
       login_request = HTTParty.post(
                         login_url,
@@ -90,7 +95,7 @@ module NestThermostat
     def find_devices(ids: nil)
       ids = status['shared'].keys unless ids
       devices = {}
-      ids.each { |id| devices[id]= device_info(device_id: id) }
+      ids.each { |id| devices[id]= shared_info(device_id: id) }
       devices
     end
 
@@ -98,8 +103,12 @@ module NestThermostat
       status['user'][user_id]
     end
 
-    def device_info(device_id: @device_id)
+    def device_info(device_id:)
       status["device"][device_id]
+    end
+
+    def shared_info(device_id:)
+      status['shared'][device_id]
     end
 
   end
