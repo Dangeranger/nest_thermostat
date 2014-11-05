@@ -6,7 +6,7 @@ module NestThermostat
       attr_accessor :structure, :id, :name, :temperature_scale
 
         def initialize(structure:, id:, name:, temperature_scale: "f")
-        @structure, @id, @name, @temperature_scale = structure, id, name, temperature_scale
+        @id, @name, @temperature_scale, @structure = id, name, temperature_scale, structure
       end
 
       def leaf

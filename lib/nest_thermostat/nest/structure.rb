@@ -5,8 +5,8 @@ module NestThermostat
     class Structure
       attr_accessor :nest, :id, :devices, :name
 
-      def initialize(nest:, id:, name:)
-        @nest, @id, @name = nest, id, name
+      def initialize(id:, name:, nest:)
+        @id, @name, @nest = id, name, nest
         @devices = @nest.find_devices(ids: device_ids).map do |id, hash|
           Device.new(structure: self, id: id, name: hash['name'])
         end

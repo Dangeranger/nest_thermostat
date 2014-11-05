@@ -60,6 +60,18 @@ module NestThermostat
 
     attr_reader :status
 
+    def find_by_name(collection, name)
+      collection.detect { |item| item.name == name }
+    end
+
+    def find_device(device_name)
+      find_by_name(devices, device_name)
+    end
+
+    def find_structure(structure_name)
+      find_by_name(structures, structure_name)
+    end
+
     def devices
       structures.map(&:devices).flatten
     end
