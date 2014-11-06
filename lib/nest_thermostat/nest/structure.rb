@@ -7,7 +7,7 @@ module NestThermostat
 
       def initialize(id:, name:, nest:)
         @id, @name, @nest = id, name, nest
-        @devices = @nest.find_devices(ids: device_ids).map do |id, hash|
+        @devices = @nest.devices_hash(ids: device_ids).map do |id, hash|
           Device.new(structure: self, id: id, name: hash['name'])
         end
       end

@@ -42,7 +42,7 @@ module NestThermostat
       structure_ids   = status['structure'].keys
       devices_ids     = status['device'].keys
 
-      @structures = find_structures.map do |id, hash|
+      @structures = structures_hash.map do |id, hash|
         Structure.new(nest: self,
                       id: id,
                       name: hash['name']
@@ -72,6 +72,18 @@ module NestThermostat
       find_by_name(structures, structure_name)
     end
 
+    def find_many_by_name(collection, name)
+      collection.detect { |item| item.name == name }
+    end
+
+    def find_devices(device_name)
+      find_many_by_name(devices, device_name)
+    end
+
+    def find_structures(structure_name)
+      find_many_by_name(structures, structure_name)
+    end
+
     def devices
       structures.map(&:devices).flatten
     end
@@ -93,7 +105,7 @@ module NestThermostat
       raise 'Invalid login credentials' if auth.has_key?('error') && auth['error'] == "access_denied"
     end
 
-    def find_structures
+    def structures_hash
       ids = status['structure'].keys
       structures = {}
       ids.each { |id| structures[id] = structure_info(structure_id: id) }
@@ -104,7 +116,7 @@ module NestThermostat
       status['structure'][structure_id]
     end
 
-    def find_devices(ids: nil)
+    def devices_hash(ids: nil)
       ids = status['shared'].keys unless ids
       devices = {}
       ids.each { |id| devices[id]= shared_info(device_id: id) }
