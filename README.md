@@ -68,19 +68,13 @@ require 'ap' # gem install awesome_print
 ap @nest.status
 ```
 
-Searching: for a particular structure or device just pass in it's name as a string. Be aware that if there are multiple devices/structures with the same name in a nest account, only the first one found will be returned. 
-
+Searching for devices/structures
 ```ruby
 
-nest.find_structure(structure_name)
-nest.find_device(device_name)
-
-```
-When you're dealing with multiple devices/structures with the same name, use these methods:
-```ruby
-
-nest.find_structures(structures_name)
-nest.find_devices(devices_name)
+@nest.find_structure("22 North St.")     #=> a single Structure  
+@nest.find_device("Basement")            #=> a single Device  
+@nest.find_structures("22 North St.")    #=> an array of Structures
+@nest.find_devices("Basement")           #=> an array of Devices (from all structures)
 
 ```
 
