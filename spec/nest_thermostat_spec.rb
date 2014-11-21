@@ -1,5 +1,4 @@
 require 'dotenv'
-require 'pry'
 require 'nest_thermostat'
 
 Dotenv.load
